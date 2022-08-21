@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// All Functions
+struct Node;
+struct Node *newNode(int data);
+struct Node *takeInput();
+void print(struct Node *head);
+void insert(struct Node **head_ref, int x, int pos);
+void del(struct Node **head_ref, int pos);
+
+// Define Main Function
+int main(void) {
+  struct Node *head = takeInput();
+  // struct Node *head_ref = &head;
+  int user;
+  while (user != 0) {
+    printf("\nEnter 1 for Insert\nEnter 2 for Delete\nEnter 3 for Print\nWanna "
+           "Exit? --Press 0\n");
+    scanf("%d", &user);
+    // Insertion
+    if (user == 1) {
+      int pos, ele;
+      printf("Enter the Position to Insert : ");
+      scanf("%d", &pos);
+      printf("Enter the Element to Insert : ");
+      scanf("%d", &ele);
+      insert(&head, ele, pos);
+    }
+    // Deletion
+    if (user == 2) {
+      int pos, ele;
+      printf("Enter the Position to Delete : ");
+      scanf("%d", &pos);
+      del(&head, pos);
+    }
+    if (user == 3) {
+      print(head);
+    }
+  }
+  return 0;
+}
+
+// Creating a Structure of Node
+struct Node {
+  int data;
+  struct Node *next;
+};
+
+// Creating a New_Node function
+struct Node *newNode(int data) {
+  struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+  node->data = data;
+  node->next = NULL;
+  return node;
+}
+
+// Creating a Take_input function
+struct Node *takeInput() {
+  struct Node *head = NULL;
+  struct Node *tail = NULL;
+
+  int mydata;
+  printf("Enter data for Nodes and then enter -1 to edit the linked list\n");
+  scanf("%d", &mydata);
+  while (mydata != -1) {
+    struct Node *curr = (struct Node *)malloc(sizeof(struct Node));
+    curr = newNode(mydata);
+
+    if (head == NULL) {
+      head = curr;
+      tail = curr;
+    } else {
+      tail->next = curr;
+      tail = tail->next;
+    }
+    scanf("%d", &mydata);
+  }
+  return head;
+}
+
+// Creating a Printing function
+void print(struct Node *head) {
+  struct Node *prev = head;
+  while (prev != NULL) {
+    printf("%d ", prev->data);
+    prev = prev->next;
+  }
+}
+
+// Creating a Insertion function
+void insert(struct Node **head_ref, int x, int pos) {
+  struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
+  new_node->data = x;
+  if (pos == 0) {
+    new_node->next = *head_ref;
+    *head_ref = new_node;
+  } else {
+    struct Node *temp = *head_ref;
+    for (int i = 0; i < pos - 1; i++) {
+      temp = temp->next;
+    }
+    new_node->next = temp->next;
+    temp->next = new_node;
+  }
+}
+
+// Creating a Deletion function
+void del(struct Node **head_ref, int pos) {
+  struct Node *temp = *head_ref;
+
+  if (pos == 0) {
+    *head_ref = temp->next;
+    free(temp);
+  } else {
+    for (int i = 0; i < pos - 1; i++) {
+      temp = temp->next;
+    }
+    struct Node *ptr = temp->next;
+    temp->next = temp->next->next;
+    free(ptr);
+  }
+}
